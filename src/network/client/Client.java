@@ -205,7 +205,7 @@ public class Client {
 	/**
 	 * This method is called by client, once it successfully connected to the
 	 * server. a subclass may exchange any information - as passwords - from or
-	 * to server, as long {@linkplain Server#connectionInit} is overridden
+	 * to server, as long {Server#connectionInit} is overridden
 	 * accordingly. The subclass may, as well, do here any initialization
 	 * required for new connection. Examples include, wrapping the streams (e.g.
 	 * with {@code javax.crypto.CipherOutputStream} - for network security),
@@ -224,7 +224,7 @@ public class Client {
 	 *
 	 * <p>
 	 * Also note, that the socket has been set to time out if it blocks for
-	 * {@linkplain TIMEOUT} milliseconds on a read. We strongly advise not to
+	 * {@linkplain this.TIMEOUT} milliseconds on a read. We strongly advise not to
 	 * change this behavior; all time consuming outputs (e.g reading from
 	 * {@code System.in}, and send to server), should be avoided in this method.
 	 *
