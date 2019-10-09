@@ -1,8 +1,12 @@
-package javax.server;
+package network.common;
+
+import network.client.Client;
+import network.client.ClientListener;
+import network.server.Server;
+import network.server.ServerListener;
+import network.server.Server.ConnectionToClient;
 
 import java.io.PrintStream;
-
-import javax.server.Server.ConnectionToClient;
 
 public class Logger implements ServerListener, ClientListener {
 

@@ -1,4 +1,4 @@
-package javax.server;
+package network.common;
 
 import java.io.Serializable;
 

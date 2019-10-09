@@ -1,4 +1,6 @@
-package javax.server;
+package network.client;
+
+import network.common.Command;
 
 public interface ClientListener {
 
@@ -13,5 +15,5 @@ public interface ClientListener {
 	public void commandSent(Client client, Command cmd);
 
 	public void connected(Client client);
-	
+
 }

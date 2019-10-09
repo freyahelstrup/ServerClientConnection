@@ -1,4 +1,8 @@
-package javax.server;
+package network.server;
+
+import network.client.Client;
+import network.client.ClientCommand;
+import network.common.Command;
 
 import java.io.*;
 import java.net.*;
@@ -15,9 +19,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This class, represents a standard server where clients (that use, or subclass
  * {@linkplain Client}) can connect and interact with. Its implementation uses
  * low level sockets without any protocol.
- * 
+ *
  * @author Mordechai Meisels
- * 
+ *
  * @see {@linkplain Client}
  *
  */
@@ -74,22 +78,22 @@ public class Server {
 	 * Constructs a {@code Server} listening for clients on specified port, and
 	 * specified amount of message handling threads. If the given thread count
 	 * is less than one, it will automatically be adjusted to 1.
-	 * 
+	 *
 	 * <p>
 	 * Please Note: Setting the thread count to more than one, may cause the
 	 * listeners to receive messages asynchronously. Use synchronization as
 	 * needed, or reconsider using multiple threads.
-	 * 
+	 *
 	 * <p>
 	 * The server will start running when the {@code start()} method is invoked. It can be stopped, by
 	 * invoking {@code shutDown()}.
-	 * 
+	 *
 	 * @param port
 	 *            The port to listen for.
 	 * @param messageHandlingThreadCount
 	 *            The amount of message handling threads, reading asynchronously
 	 *            for incoming messages.
-	 * 
+	 *
 	 */
 	public Server(int port, int messageHandlingThreadCount) {
 		this.port = port;
@@ -113,14 +117,14 @@ public class Server {
 	/**
 	 * Constructs a {@code Server} listening for clients on specified port, with
 	 * 1 message handling thread.
-	 * 
+	 *
 	 * <p>
 	 * The server will start running when the {@code start()} method is invoked. It can be stopped, by
 	 * invoking {@code shutDown()}.
-	 * 
+	 *
 	 * @param port
 	 *            The port to listen for.
-	 * 
+	 *
 	 */
 	public Server(int port) {
 		this(port, 1);
@@ -131,18 +135,18 @@ public class Server {
 	 * different object (e.g. after decode), that will be forwarded to the
 	 * listeners. If the returned value is {@code null}, the message will not be
 	 * forwarded to the listeners.
-	 * 
+	 *
 	 * <p>
 	 * This method will never give a {@code null} value as an argument.
-	 * 
+	 *
 	 * <p>
 	 * The current implementation simply returns the all messages, as received.
-	 * 
+	 *
 	 * @param id
 	 *            The client id that sent this message.
 	 * @param msg
 	 *            The received message.
-	 * 
+	 *
 	 * @return The message that should be forwarded to the listeners.
 	 */
 	protected Object messageReceivedInit(int id, Object msg) {
@@ -154,23 +158,23 @@ public class Server {
 	 * interactions between server and client that is not meant to be shown for
 	 * the end-user, rather it is to update each other with back-side
 	 * information, or to request certain types of data.
-	 * 
+	 *
 	 * <p>
 	 * A subclass may return a different object (e.g. after decode), that will
 	 * be forwarded to the listeners. If the returned value is {@code null}, the
 	 * command will not be forwarded to the listeners.
-	 * 
+	 *
 	 * <p>
 	 * This method will never give a {@code null} value as an argument.
-	 * 
+	 *
 	 * <p>
 	 * The current implementation simply returns the all commands, as received.
-	 * 
+	 *
 	 * @param id
 	 *            The client id that sent this command.
 	 * @param cmd
 	 *            The received command.
-	 * 
+	 *
 	 * @return The command that should be forwarded to the listeners.
 	 */
 	protected Command commandReceivedInit(int id, Command cmd) {
@@ -186,34 +190,34 @@ public class Server {
 	 * (e.g. with {@code javax.crypto.CipherOutputStream} - for network
 	 * security), which is allowed, as long the top-most stream is an Object
 	 * stream.
-	 * 
+	 *
 	 * <p>
 	 * In any event, where a subclass want's to reject a specific connection, it
 	 * should return {@code null}.
-	 * 
+	 *
 	 * <p>
 	 * Please note: At this stage of the client connection-life, it is
 	 * technically not running, so {@code send()} <em>will <b>not</b> send</em>.
 	 * A subclass should manually send with the stream's methods. Remember to
 	 * flush and reset the output stream after writing, (or use the
 	 * {@code force()} convenience method).
-	 * 
+	 *
 	 * <p>
 	 * Also note, that the socket has been set to time out if it blocks for
 	 * {@linkplain TIMEOUT} milliseconds on a read. We strongly advise not to
 	 * change this behavior; all time consuming outputs (e.g reading from
 	 * {@code System.in}, and send to client), should be avoided in this method.
-	 * 
+	 *
 	 * <p>
 	 * This method may throw either an {@code IOException}, or a
 	 * {@code ClassNotFoundException}. If any if these occur, the connection
 	 * will be shut down.
-	 * 
+	 *
 	 * <p>
 	 * The current implementation of this method simply returns a new instance
 	 * of {@code ConnectionToClient}. A subclass may return a custom version of
 	 * that class.
-	 * 
+	 *
 	 * @param id
 	 *            Client's id number.
 	 * @param socket
@@ -222,7 +226,7 @@ public class Server {
 	 *            Input stream to read input from client.
 	 * @param out
 	 *            Output stream to write output to client.
-	 * 
+	 *
 	 * @return A {@code ConnectionToClient}, or {@code null} to reject
 	 *         connection.
 	 */
@@ -233,7 +237,7 @@ public class Server {
 
 	/**
 	 * Returns the connection to client {@code n}.
-	 * 
+	 *
 	 * @param id
 	 *            The client id.
 	 * @return The connection for requested id.
@@ -244,7 +248,7 @@ public class Server {
 
 	/**
 	 * Returns a {@code Collection} of all active clients.
-	 * 
+	 *
 	 * @return A {@code Collection} of all active clients.
 	 */
 	public Collection<ConnectionToClient> getClients() {
@@ -253,7 +257,7 @@ public class Server {
 
 	/**
 	 * Returns whether there is an active client with this id.
-	 * 
+	 *
 	 * @param id
 	 *            The id to check for.
 	 * @return Whether is contains an active client for this id.
@@ -265,7 +269,7 @@ public class Server {
 	/**
 	 * Returns the amount of threads that handles incoming messages,
 	 * asynchronously.
-	 * 
+	 *
 	 * @return The amount of threads that handles incoming messages,
 	 *         asynchronously.
 	 */
@@ -276,7 +280,7 @@ public class Server {
 	/**
 	 * Sends a serializable message for the specified client, may be a command,
 	 * too.
-	 * 
+	 *
 	 * @param msg
 	 *            The message to be sent.
 	 * @param id
@@ -295,7 +299,7 @@ public class Server {
 	/**
 	 * Sends a serializable message to all active clients, may be a command,
 	 * too.
-	 * 
+	 *
 	 * @param msg
 	 *            The message to be sent.
 	 * @return {@code true} only if message went through to "all" clients.
@@ -311,7 +315,7 @@ public class Server {
 
 	/**
 	 * Returns the listening port of the server socket.
-	 * 
+	 *
 	 * @return The listening port of the server socket.
 	 */
 	public int getPort() {
@@ -322,11 +326,11 @@ public class Server {
 
 	/**
 	 * Starts the server, and returns if it has successfully started.
-	 * 
+	 *
 	 * <p>
 	 * If the server has been shut down once (dead) or running already, it will
 	 * not be started, and will return {@code false}.
-	 * 
+	 *
 	 * @return If the server has been started successfully.
 	 * @return
 	 */
@@ -372,7 +376,7 @@ public class Server {
 	/**
 	 * Blocks the calling thread, until the server has been shut down or
 	 * unsynced.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *             If the thread has been interrupted while waiting.
 	 */
@@ -389,10 +393,10 @@ public class Server {
 	/**
 	 * Blocks the calling thread for the given time, until the server has been
 	 * shut down or unsynced.
-	 * 
+	 *
 	 * @param timeout
 	 *            The maximum amount of milliseconds to block.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *             If the thread has been interrupted while waiting.
 	 */
@@ -417,7 +421,7 @@ public class Server {
 	 * Stops accepting new connections, and clears the accept mechanism
 	 * resources. The existing connections are preserved. There is no way to
 	 * accept again with this instance, once stopped.
-	 * 
+	 *
 	 * <p>
 	 * In case a user chooses to limit the number of accepted clients, they
 	 * should rather use {@code setClientLimit()} since old clients may
@@ -436,13 +440,13 @@ public class Server {
 	 * clients disconnects, new connections will be allowed again. To stop
 	 * accepting permanently use {@code stopAccepting()}. Use any negative to
 	 * allow infinite connections.
-	 * 
+	 *
 	 * <p>
 	 * Note: Even if the connection will eventually be rejected, as it reached
 	 * the limit; it will still call {@code connectionInit()} (this has been
 	 * coded this way, not to block the client, as it waits some data in its
 	 * {@code connectionInit()}). The listeners will <i>not</i> be notified.
-	 * 
+	 *
 	 * <p>
 	 * This method will only affect new connections. Setting the limit to lower
 	 * than currently connected clients, will only ensure not to accept new
@@ -479,7 +483,7 @@ public class Server {
 	/**
 	 * Returns if the server is currently running. This may be changed either by
 	 * the {@code shutDown()} method, or by any error occurring to the server.
-	 * 
+	 *
 	 * @return If the server is currently running.
 	 */
 	public boolean running() {
@@ -489,7 +493,7 @@ public class Server {
 	/**
 	 * Returns if the server is eligible to start, or has started already. A
 	 * dead server, means it has shut down and may not start again.
-	 * 
+	 *
 	 * @return If the server has not ever shut down.
 	 */
 	public boolean isAlive() {
@@ -498,7 +502,7 @@ public class Server {
 
 	/**
 	 * Registers a {@code ServerListener} to listen for server events.
-	 * 
+	 *
 	 * @param sl
 	 *            The {@code ServerListener} to register.
 	 */
@@ -508,7 +512,7 @@ public class Server {
 
 	/**
 	 * Unregisters a {@code ServerListener} from getting server events.
-	 * 
+	 *
 	 * @param sl
 	 *            The {@code ServerListener} to remove.
 	 */
@@ -684,7 +688,7 @@ public class Server {
 	 * This class represents a connection to a single client. When created it
 	 * will start running and listen for data received from client. Once it is
 	 * shut down, it cannot be started again. A new instance must be created.
-	 * 
+	 *
 	 */
 	public class ConnectionToClient {
 
@@ -697,7 +701,7 @@ public class Server {
 
 		/**
 		 * Constructs a new instance of a client connection.
-		 * 
+		 *
 		 * @param id
 		 *            The clients unique id.
 		 * @param socket
@@ -740,7 +744,7 @@ public class Server {
 
 		/**
 		 * Returns the clients id for this connection.
-		 * 
+		 *
 		 * @return The clients id for this connection.
 		 */
 		public int getClientId() {
@@ -749,7 +753,7 @@ public class Server {
 
 		/**
 		 * Returns the input stream.
-		 * 
+		 *
 		 * @return The input stream.
 		 */
 		protected ObjectInputStream getInputStream() {
@@ -758,7 +762,7 @@ public class Server {
 
 		/**
 		 * Returns the output stream.
-		 * 
+		 *
 		 * @return The output stream.
 		 */
 		protected ObjectOutputStream getOutputStream() {
@@ -767,7 +771,7 @@ public class Server {
 
 		/**
 		 * Returns the socket connecting to the client.
-		 * 
+		 *
 		 * @return The socket connecting to the client.
 		 */
 		protected Socket getSocket() {
@@ -778,7 +782,7 @@ public class Server {
 		 * Returns if the client is currently running. This may be changed
 		 * either by the {@code shutDown()} or {@code localShutDown()} methods,
 		 * or by any error occurring to this client.
-		 * 
+		 *
 		 * @return if the client is currently running.
 		 */
 		public boolean localRunning() {
@@ -787,7 +791,7 @@ public class Server {
 
 		/**
 		 * Sends given serializable object to this client.
-		 * 
+		 *
 		 * @param msg
 		 *            The message to be sent, may be a command too.
 		 * @return If message has been sent successfully.
@@ -822,11 +826,11 @@ public class Server {
 		 * A subclass may work with an object asked to send, here (e.g. encode).
 		 * Only the returned object will be sent. Returning {@code null} will
 		 * successfully abort the sending of this message.
-		 * 
+		 *
 		 * <p>
 		 * This implementation simply returns the same object, given as
 		 * argument.
-		 * 
+		 *
 		 * @param msg
 		 *            The message asked to be sent.
 		 * @return The actual message to send.
@@ -840,7 +844,7 @@ public class Server {
 		 * called in the event the client is shut down. This method will always
 		 * be called <em>after</em> the streams have been closed, it should be
 		 * used just for server-side stuff.
-		 * 
+		 *
 		 * <p>
 		 * The current implementation does nothing.
 		 */
@@ -850,7 +854,7 @@ public class Server {
 		/**
 		 * Shuts down this client only. All other clients may continue working
 		 * regularly.
-		 * 
+		 *
 		 */
 		public void localShutDown() {
 			if (!localAlive)
