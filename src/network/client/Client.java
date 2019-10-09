@@ -2,6 +2,7 @@ package network.client;
 
 import network.common.Command;
 import network.server.ServerCommand;
+import network.server.Server;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class Client {
 	 * @param port
 	 *            The port to listen for.
 	 */
-	public Client(String serverAddress, int port) {
+	public Client(String serverAddress, int port, ClientListener clientListener) {
 		this.serverAddress = serverAddress;
 		this.port = port;
 		id = new AtomicInteger(0);
@@ -90,13 +91,7 @@ public class Client {
 		listeners = Collections.synchronizedList(new ArrayList<>());
 		alive = true;
 
-		addClientListener(new ClientAdapter() {
-			@Override
-			public void commandReceived(Client client, Command cmd) {
-				if (cmd == ServerCommand.DISCONNECTED)
-					shutDown();
-			}
-		});
+		addClientListener(clientListener);
 	}
 
 	/**

@@ -95,7 +95,7 @@ public class Server {
 	 *            for incoming messages.
 	 *
 	 */
-	public Server(int port, int messageHandlingThreadCount) {
+	public Server(int port, int messageHandlingThreadCount, ServerListener serverListener) {
 		this.port = port;
 		clients = Collections.synchronizedMap(new HashMap<>());
 		messages = new LinkedBlockingQueue<>();
@@ -104,14 +104,7 @@ public class Server {
 		clientLimit = -1;
 		alive = true;
 
-		addServerListener(new ServerAdapter() {
-			@Override
-			public void commandReceived(Server server, ConnectionToClient ctc, Command cmd) {
-				if (cmd == ClientCommand.DISCONNECT) {
-					ctc.localShutDown();
-				}
-			}
-		});
+		addServerListener(serverListener);
 	}
 
 	/**
@@ -126,8 +119,8 @@ public class Server {
 	 *            The port to listen for.
 	 *
 	 */
-	public Server(int port) {
-		this(port, 1);
+	public Server(int port, ServerListener serverListener) {
+		this(port, 1, serverListener);
 	}
 
 	/**
